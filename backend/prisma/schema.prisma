@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  firstName   String?
+  lastName    String?
+  password    String
+  role        Role      @default(USER)
+  profile     UserProfiles?
+}
+
+model UserProfiles {
+  id                      Int       @id @default(autoincrement())
+  userId                  Int       @unique
+  age                     Int
+  gender                  Gender
+  weight                  Float      // in kg
+  height                  Int       // in cm
+  dietryPreferences       DietryPreferences
+  healthGoal              Goal
+  allergies               String[]
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum DietryPreferences {
+  Ketogenic
+  Vegetarian
+  Vegan
+  Pescetarian
+  Paleo
+  Primal
+  Whole30
+}
+
+enum Goal {
+  LOSE_WEIGHT
+  GAIN_WEIGHT
+  MAINTAIN_WEIGHT
+}
